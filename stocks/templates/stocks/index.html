@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if stocks_list %}
+    <ul>
+    {% for s in stocks_list %}
+        <li><a href="{% url 'stocks:detail' s.name %}">{{ s.long_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No stocks are available.</p>
+{% endif %}
+
+</body>
+</html>
