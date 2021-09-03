@@ -1,10 +1,8 @@
-from time import timezone
-
 from django.db import models
 
 
 class Stock(models.Model):
-    name = models.CharField(max_length=8)
+    name = models.CharField(max_length=8,primary_key = True)
     long_name = models.CharField(max_length=128)
     created = models.DateTimeField('created')
 
@@ -23,7 +21,7 @@ class StockData(models.Model):
     )
 
     def __str__(self):
-        return self.date
+        return self.stock.name
 
     class Meta:
         app_label = 'stocks'
