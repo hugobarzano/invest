@@ -2,9 +2,11 @@
 import http.client
 import ssl
 import json
+from enum import Enum
 
 API_DATA = 'www.alphavantage.co'
 STOCK_DATA = '/query?function=TIME_SERIES_INTRADAY&symbol={}&interval=5min&apikey={}'
+
 
 class Client:
 
@@ -37,6 +39,24 @@ class Client:
 
     def get(self, url, path):
         return self.without_body(url, path, "GET")
+
+
+class AlphaBodyKey(Enum):
+    OPEN = "1. open"
+    HIGH = "2. high"
+    LOW = "3. low"
+    CLOSE = "4. close"
+    VOL = "5. volume"
+
+class AlphaTimeKey(Enum):
+    FIVE_MIN ="Time Series (5min)"
+
+
+class AlphaClient(Client):
+    def __init__(self, api_key):
+        super().__init__(api_key)
+        self.body_keys = AlphaBodyKey
+        self.time_keys = AlphaTimeKey
 
     def get_stock_data(self, stock_name):
         return self.get(API_DATA, STOCK_DATA.format(stock_name, self.api_key))

@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from .client import Client
+from .client import AlphaClient
 
 
 class ClientTestCase(TestCase):
@@ -9,9 +9,8 @@ class ClientTestCase(TestCase):
         print("HTTP client testing")
 
     def test_get_stock_data(self):
-        c = Client("EGS9M9PKVRPCC946")
+        c = AlphaClient("EGS9M9PKVRPCC946")
         status, body = c.get_stock_data("NIO")
         self.assertEqual((len(body) > 0), True)
-        time_serie_key = "Time Series (5min)"
-        for k in body[time_serie_key]:
-            print("{} --- {}".format(k, body[time_serie_key][k]))
+        for k in body[c.time_keys.FIVE_MIN.value]:
+            print("{} --- {}".format(k, body[c.time_keys.FIVE_MIN.value][k][c.body_keys.OPEN.value]))
