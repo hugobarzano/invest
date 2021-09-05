@@ -15,6 +15,10 @@
     <canvas id="stock-chart" data-url="{% url 'stocks:detail_as_json' stock.name %}"></canvas>
   </div>
 
+  <div id="container2" style="width: 75%;">
+    <canvas id="stock-chart2" data-url="{% url 'stocks:detail_from_elastic_json' stock.name %}"></canvas>
+  </div>
+
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
   <script>
@@ -26,7 +30,46 @@
       $.ajax({
         url: $stockChart.data("url"),
         success: function (data) {
-          console.log(data.data)
+          var ctx = $stockChart[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.date,
+              datasets: [{
+                label: 'Stock',
+                backgroundColor: 'blue',
+                data: data.open
+              }]
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Stock Data from Alpha API'
+              }
+            }
+          });
+
+        }
+      });
+
+    });
+
+
+
+
+
+
+    $(function () {
+
+      var $stockChart = $("#stock-chart2");
+      $.ajax({
+        url: $stockChart.data("url"),
+        success: function (data) {
           var ctx = $stockChart[0].getContext("2d");
 
           new Chart(ctx, {
@@ -46,7 +89,7 @@
               },
               title: {
                 display: true,
-                text: 'Stock Info'
+                text: 'Stock Data from Elastic'
               }
             }
           });
@@ -55,7 +98,6 @@
       });
 
     });
-
   </script>
 
 

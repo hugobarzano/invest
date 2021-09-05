@@ -3,8 +3,6 @@ import http.client
 import ssl
 import json
 
-API_DATA = 'www.alphavantage.co'
-STOCK_DATA = '/query?function=TIME_SERIES_INTRADAY&symbol={}&interval=5min&apikey={}'
 
 class HttpClient:
 
@@ -37,6 +35,3 @@ class HttpClient:
 
     def get(self, url, path):
         return self.without_body(url, path, "GET")
-
-    def get_stock_data(self, stock_name):
-        return self.get(API_DATA, STOCK_DATA.format(stock_name, self.api_key))
