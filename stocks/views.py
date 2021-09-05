@@ -3,7 +3,7 @@ from django.views import generic
 from django.http import JsonResponse
 from .models import *
 
-from .client.client import *
+from clients.http_client import AlphaClient
 
 class IndexView(generic.ListView):
     template_name = 'stocks/index.html'
@@ -22,8 +22,8 @@ def detail_as_json(request,stock_name):
     date = []
     open = []
 
-    c = Client("EGS9M9PKVRPCC946")
-    status, body = c.get_stock_data(stock_name)
+    c = AlphaClient("EGS9M9PKVRPCC946")
+    status, body = c.get_stock_from_api(stock_name)
 
     time_serie_key = "Time Series (5min)"
     for k in body[time_serie_key]:
