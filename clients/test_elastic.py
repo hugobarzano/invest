@@ -1,37 +1,40 @@
-import time
+import datetime
+import json
 import unittest
-from datetime import datetime
-from elasticsearch import Elasticsearch
 
-class TestAlpah(unittest.TestCase):
+from .alpha_client import AlphaClient
+from .elastic_client import ElasticClient
 
-    def test_client(self):
-        es = Elasticsearch("es:9200")
-        doc = {
-            'long_name': 'NIO',
-            'created': datetime.now(),
-            "value":1
-        }
-        res = es.index(index="test-index", id="NIO", body=doc)
-        print(res['result'])
+ALPHA_API_KEY_DEV = "EGS9M9PKVRPCC946"
 
-        time.sleep(10)
-        test_date=datetime.now()
-        doc = {
-            'value': 2
-        }
+class TestElastic(unittest.TestCase):
 
+    def test_ingest_nio(self):
+        elastic = ElasticClient()
+        elastic.setup_index_template()
 
-        res = es.get(index="test-index", id="NIO")
-        print(res['_source'])
+        c = AlphaClient(ALPHA_API_KEY_DEV)
+        status, docs = c.get_stock_5_min("nio")
 
-        es.indices.refresh(index="test-index")
+        data = elastic.prepare_bulk_data("stock-nio", docs)
+        elastic.client.bulk(data,index="sock-nio")
+        elastic.client.indices.refresh(index="stock-nio")
 
-        res = es.search(index="test-index")
-        print("Got %d Hits:" % res['hits']['total']['value'])
-        for hit in res['hits']['hits']:
-            print(hit)
-            print("%s" % hit["_source"]["data"])
+        result = elastic.client.search(index="stock-nio", body={
+            "query": {
+                "range": {
+                    "timestamp": {
+                        # "gte": now - datetime.timedelta(minutes=15),
+                        # "gt": datetime.datetime.now()
+                        "lt": datetime.datetime.now()
+                    }
+                }
+            },
+        })
+
+        print(json.dumps(result, indent=4, sort_keys=True))
+        print("Found %d results." % result["hits"]["total"]["value"])
+
 
 if __name__ == '__main__':
     unittest.main()

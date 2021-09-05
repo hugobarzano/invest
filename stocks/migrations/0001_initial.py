@@ -19,14 +19,5 @@ class Migration(migrations.Migration):
                 ('long_name', models.CharField(max_length=128)),
                 ('created', models.DateTimeField(verbose_name='created')),
             ],
-        ),
-        migrations.CreateModel(
-            name='StockData',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('open', models.CharField(max_length=128)),
-                ('date', models.DateTimeField()),
-                ('stock', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='stocks', to='stocks.stock')),
-            ],
-        ),
+        )
     ]

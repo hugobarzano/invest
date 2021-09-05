@@ -10,25 +10,4 @@ class Stock(models.Model):
         return self.name
 
 
-class StockData(models.Model):
-    open = models.FloatField()
-    high = models.FloatField()
-    low = models.FloatField()
-    close = models.FloatField()
-    volume = models.FloatField()
-    date = models.DateTimeField()
-
-    stock = models.ForeignKey(
-        Stock,
-        related_name='stock',
-        on_delete=models.CASCADE
-    )
-
-    def __str__(self):
-        return self.open
-
-    class Meta:
-        app_label = 'stock'
-
-
 

@@ -2,11 +2,7 @@
 import http.client
 import ssl
 import json
-from enum import Enum
-from stocks.models import StockData, Stock
 
-API_DATA = 'www.alphavantage.co'
-STOCK_DATA = '/query?function=TIME_SERIES_INTRADAY&symbol={}&interval=5min&apikey={}'
 
 class HttpClient:
 
@@ -39,51 +35,3 @@ class HttpClient:
 
     def get(self, url, path):
         return self.without_body(url, path, "GET")
-
-    def get_stock_data(self, stock_name):
-        return self.get(API_DATA, STOCK_DATA.format(stock_name, self.api_key))
-
-class AlphaBodyKey(Enum):
-    OPEN = "1. open"
-    HIGH = "2. high"
-    LOW = "3. low"
-    CLOSE = "4. close"
-    VOL = "5. volume"
-
-class AlphaTimeKey(Enum):
-    FIVE_MIN ="Time Series (5min)"
-
-
-class AlphaClient(HttpClient):
-    def __init__(self, api_key):
-        super().__init__(api_key)
-        self.body_keys = AlphaBodyKey
-        self.time_keys = AlphaTimeKey
-
-    def AlphaDecoder(self, date,obj):
-        return StockData(date=date,
-                         open=obj[self.body_keys.OPEN.value],
-                         high=obj[self.body_keys.HIGH.value],
-                         low=obj[self.body_keys.LOW.value],
-                         close=obj[self.body_keys.CLOSE.value],
-                         volume=obj[self.body_keys.VOL.value])
-
-    def get_stock_from_api(self, stock_name):
-        return self.get(API_DATA, STOCK_DATA.format(stock_name, self.api_key))
-
-    def save_stock_5_min(self,stock_name):
-        status,data = self.get_stock_from_api(stock_name)
-        for k in data[self.time_keys.FIVE_MIN.value]:
-            stock_data = self.AlphaDecoder(self,data[self.time_keys.FIVE_MIN.value][k])
-            stock_data.date=k
-            stock_data.stock=Stock(name=stock_name)
-            stock_data.save()
-
-    def get_stock_5_min(self, stock_name):
-        status,data = self.get_stock_from_api(stock_name)
-        for k in data[self.time_keys.FIVE_MIN.value]:
-            print("{} --- {}".format(k, data[self.time_keys.FIVE_MIN.value][k]))
-            STK = self.AlphaDecoder(data[self.time_keys.FIVE_MIN.value][k])
-            print(STK)
-        return data
-
