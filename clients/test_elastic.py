@@ -16,7 +16,7 @@ class TestElastic(unittest.TestCase):
         c = AlphaClient(ALPHA_API_KEY_DEV)
         status, docs = c.get_stock_5_min("nio")
 
-        data = elastic.prepare_bulk_data("stock-nio", docs)
+        data = elastic.prepare_bulk_data("nio", docs)
         elastic.client.bulk(data,index="sock-nio")
         elastic.client.indices.refresh(index="stock-nio")
 
