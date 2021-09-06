@@ -7,7 +7,10 @@ from constans.constans import *
 class ElasticClient:
 
     def __init__(self):
-        self.client = elasticsearch.Elasticsearch(hosts=["localhost:9200", "es:9200"])
+        self.client = elasticsearch.Elasticsearch(hosts=[
+            # "localhost:9200",
+            # "es:9200",
+            "https://ka2j6key75:giz0hrmd9j@cesarcorp-3411805901.eu-west-1.bonsaisearch.net:443"])
 
     def setup_index_template(self):
         self.client.indices.put_template(name="stock", body={
@@ -39,8 +42,12 @@ class ElasticClient:
             }
         })
 
-    @staticmethod
-    def prepare_bulk_data(index_name, data):
+    def ensure_stock_index(self,index_name):
+        self.client.indices.create(index=index_name, ignore=400)
+
+    def prepare_bulk_data(self, stock_name, data):
+        index_name = "stock-{}".format(stock_name)
+        self.ensure_stock_index(index_name)
         docs = []
         for d in data:
             docs.append({"index": {"_index": index_name}})
