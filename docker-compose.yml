@@ -22,11 +22,11 @@ services:
         test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
     invest:
         build: .
-        command: python /invest/manage.py runserver 0.0.0.0:8080
+        command: python /invest/manage.py runserver 0.0.0.0:443
         volumes:
           - .:/invest
         ports:
-          - "8080:8080"
+          - "443:443"
         env_file:
           - docker-compose.env
     kibana:
