@@ -13,7 +13,8 @@ COPY . /invest/
 
 RUN pip3 install -r requirements.txt
 
-EXPOSE 8080
+EXPOSE 80
 EXPOSE 443
 
-CMD ["./run.sh"]
+CMD gunicorn invest.wsgi:application --bind 0.0.0.0:$PORT
+
