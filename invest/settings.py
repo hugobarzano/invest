@@ -31,7 +31,6 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    'django_elasticsearch_dsl',
     'stocks.apps.StocksConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -120,10 +119,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# Elasticsearch
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': os.getenv("ELASTICSEARCH_DSL_HOSTS", 'localhost:9200')
-    },
-}
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
