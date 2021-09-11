@@ -1,0 +1,5 @@
+build:
+  docker:
+    invest: Dockerfile
+run:
+  web: ./manage.py runserver
